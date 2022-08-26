@@ -1,0 +1,23 @@
+{
+  "name": "booksdirectory",
+  "version": "1.0.0",
+  "description": "# Schemas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramyeb-learning/express-books-directory.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ramyeb-learning/express-books-directory/issues"
+  },
+  "homepage": "https://github.com/ramyeb-learning/express-books-directory#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
