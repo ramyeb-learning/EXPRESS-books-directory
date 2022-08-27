@@ -2,6 +2,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const axios = require('axios')
 
 //imports
 const {users} = require('./db/users')
@@ -33,14 +34,25 @@ app.route('/users')
     })
 
 app.route('/books')
-    .get((req, res)=>{
-        res.status(200).json({message: ' All books'})
-        //Get all books via API
+    .get(async (req, res)=>{
+        try{
+            const response = await axios.get('https://openlibrary.org/search.json?author=tolkien')
+            res.status(200).json(response.data)
+        } catch (e){
+            res.status(500).json({error: e.message})
+        }           
+
     })
 
+
 app.route('/book/:id')
-    .get((req, res)=>{
-        //get
+    .get( async (req, res)=>{
+        try{
+            const response = await axios.get(' https://openlibrary.org/books/OL7353617M.json') 
+            res.status(200).json(response.data)
+        }catch (e){
+            res.status(500).json({error: e.message})
+        }
     })
     .post((req, res)=>{
         //create
