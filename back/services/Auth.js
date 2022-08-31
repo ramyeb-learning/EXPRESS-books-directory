@@ -41,7 +41,7 @@ function register(req, res) {
             throw new Error('This username already exist')
 
         const user = {
-            id: users.length,
+            id: users[users.length-1].id+1,
             username,
             password
         }    

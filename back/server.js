@@ -4,9 +4,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 const axios = require('axios')
 
-//imports
-const {users} = require('./db/users')
-
 //config
 const PORT = 3000
 
@@ -18,51 +15,40 @@ app.use(cors())
 
 //middlewares
 const {verifyJwtMiddleware} = require('./middleware/jwt')
+const {verifyOwnershipMiddleware} = require('./middleware/ownership')
 const securityMiddlewares = [verifyJwtMiddleware]
+const securityAndOwnerMiddlewares = [...securityMiddlewares, verifyOwnershipMiddleware]
 
 //services
 const {register, login} = require('./services/Auth')
+const {getAllBooks, getBook, postBook, putBook, deleteBook} = require('./services/Book')
+const {getAllUsers} = require('./services/User')
 
+
+//---------------ROUTES--------------
+
+//Auth Route
 app.route('/login').post(login);
 app.route('/register').post(register);
 
+//User Route
 app.route('/users')
-    .get([...securityMiddlewares], (req,res)=> {
-        const listOfUsers = []
-        users.forEach(e => listOfUsers.push(e.username))
-        res.json(listOfUsers)
-    })
+    .get([...securityMiddlewares], getAllUsers)
 
+//Books route
 app.route('/books')
-    .get(async (req, res)=>{
-        try{
-            const response = await axios.get('https://openlibrary.org/search.json?author=tolkien')
-            res.status(200).json(response.data)
-        } catch (e){
-            res.status(500).json({error: e.message})
-        }           
+    .get(getAllBooks);
 
-    })
-
+app.route('/book')
+    .post([...securityMiddlewares], postBook)
 
 app.route('/book/:id')
-    .get( async (req, res)=>{
-        try{
-            const response = await axios.get(' https://openlibrary.org/books/OL7353617M.json') 
-            res.status(200).json(response.data)
-        }catch (e){
-            res.status(500).json({error: e.message})
-        }
-    })
-    .post((req, res)=>{
-        //create
-    })
-    .put((req, res)=>{
-        //modify
-    })
-    .delete((req, res)=>{
-        //delete
-    })
+    .get( getBook )
+    .put( [...securityAndOwnerMiddlewares], putBook)
+    .delete([...securityAndOwnerMiddlewares], deleteBook)
+
+    
+//---------------SERV--------------
 
 const server = app.listen(PORT, ()=>{
     console.log(`Server listening on port : ${PORT}`)

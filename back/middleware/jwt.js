@@ -21,6 +21,7 @@ const verifyJwtMiddleware = (req,res, next) => {
         jwt.verify(token, SECRET, (err, decoded)=>{
             if(err)
                 throw new Error('Wrong token')
+            res.locals.user = decoded; 
             next()
         })
 
